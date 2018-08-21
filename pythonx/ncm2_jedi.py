@@ -80,8 +80,8 @@ class Source(Ncm2Source):
             item = dict(word=ctx['base']+insert,
                         icase=1,
                         dup=1,
-                        menu=complete.description,
-                        info=complete.docstring())
+                        menu="",
+                        info="")
 
             item = self.match_formalize(ctx, item)
 
@@ -90,12 +90,12 @@ class Source(Ncm2Source):
                 item['word'] = complete.name
 
             # snippet support
-            try:
-                if (complete.type == 'function' or complete.type == 'class'):
-                    self.render_snippet(item, complete, is_import)
-            except Exception as ex:
-                logger.exception(
-                    "exception parsing snippet for item: %s, complete: %s", item, complete)
+            # try:
+            #     if (complete.type == 'function' or complete.type == 'class'):
+            #         self.render_snippet(item, complete, is_import)
+            # except Exception as ex:
+            #     logger.exception(
+            #         "exception parsing snippet for item: %s, complete: %s", item, complete)
 
             matches.append(item)
 
