@@ -8,11 +8,10 @@ import jedi
 # import os
 from itertools import zip_longest
 
-
 logger = getLogger(__name__)
 
 import_pat = re.compile(r'^\s*(from|import)')
-callsig_pat = re.compile(r'^\s*(?!from|import).*?[(,]\s*$')
+callsig_pat = re.compile(r'[\(,]$')
 
 class Source(Ncm2Source):
 
@@ -46,8 +45,8 @@ class Source(Ncm2Source):
                 cmdline_call_signatures(signatures)
             except Exception as ex:
                 logger.info("")
-        else:
-            vim_command('echo ""')
+        # else:
+        #     vim_command('echo ""')
 
         logger.info('completions %s', completions)
 
@@ -234,11 +233,12 @@ def cmdline_call_signatures(signatures):
     def too_long():
         return len(join()) > max_msg_len
 
-    if len(signatures) > 1:
-        params = zip_longest(*map(get_params, signatures), fillvalue='_')
-        params = ['(' + ', '.join(p) + ')' for p in params]
-    else:
-        params = get_params(signatures[0])
+    # if len(signatures) > 1:
+    #     params = zip_longest(*map(get_params, signatures), fillvalue='_')
+    #     params = ['(' + ', '.join(p) + ')' for p in params]
+    # else:
+    #     params = get_params(signatures[0])
+    params = get_params(signatures[-1])
 
     index = next(iter(s.index for s in signatures if s.index is not None), None)
 
@@ -286,6 +286,7 @@ def cmdline_call_signatures(signatures):
     #              max_num_spaces) * ' '
     spaces = ""
 
+    vim_command('echo ""')
     if index is not None:
         vim_command('                      echon "%s" | '
                     'echohl Function     | echon "%s" | '
