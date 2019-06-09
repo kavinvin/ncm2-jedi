@@ -26,7 +26,7 @@ endif
 let g:ncm2_jedi#source = extend(get(g:, 'ncm2_jedi#source', {}), {
             \ 'name': 'jedi',
             \ 'ready': 0,
-            \ 'priority': 9,
+            \ 'priority': 8,
             \ 'mark': 'py',
             \ 'scope': ['python'],
             \ 'subscope_enable': 1,
@@ -55,3 +55,20 @@ func! ncm2_jedi#on_complete(ctx)
     call g:ncm2_jedi#proc.try_notify('on_complete', a:ctx, getline(1, '$'))
 endfunc
 
+" Helper function instead of `python vim.eval()`, and `.command()` because
+" these also return error definitions.
+func! ncm2_jedi#_vim_exceptions(str, is_eval)
+    let l:result = {}
+    try
+        if a:is_eval
+            let l:result.result = eval(a:str)
+        else
+            execute a:str
+            let l:result.result = ''
+        endif
+    catch
+        let l:result.exception = v:exception
+        let l:result.throwpoint = v:throwpoint
+    endtry
+    return l:result
+endfunc
